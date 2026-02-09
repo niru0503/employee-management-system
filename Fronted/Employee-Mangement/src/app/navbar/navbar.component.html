@@ -1,0 +1,97 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-logo">
+      <span class="logo-link">
+        <span class="logo-icon">
+          <svg class="hi-dashboard" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5Z"/>
+            <path d="M14 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5Z"/>
+            <path d="M4 16a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3Z"/>
+            <path d="M14 13a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-6Z"/>
+          </svg>
+        </span>
+        <span class="logo-text">Employee Management System</span>
+      </span>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger" [class.active]="isNavOpen" (click)="toggleNav()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="navbar-menu" [class.active]="isNavOpen">
+      <div class="nav-center" *ngIf="auth.isAuthenticated()">
+        <a routerLink="/dashboard" 
+           routerLinkActive="active" 
+           (click)="closeNav()"
+           class="nav-link">
+          <span class="nav-icon">
+            <svg class="hi-dashboard" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5Z"/>
+              <path d="M14 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5Z"/>
+              <path d="M4 16a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3Z"/>
+              <path d="M14 13a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-6Z"/>
+            </svg>
+          </span>
+          Dashboard
+        </a>
+        <a routerLink="/employees" 
+           routerLinkActive="active" 
+           (click)="closeNav()"
+           class="nav-link">
+          <span class="nav-icon">
+            <svg class="hi-users" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="8" r="3" />
+              <path d="M17 11c1.657 0 3 1.343 3 3v2" />
+              <path d="M6 11c-1.657 0-3 1.343-3 3v2" />
+              <path d="M20 21v-2a4 4 0 0 0-4-4h-8a4 4 0 0 0-4 4v2" />
+            </svg>
+          </span>
+          Employee List
+        </a>
+        <a routerLink="/create-employee" 
+           routerLinkActive="active" 
+           (click)="closeNav()"
+           class="nav-link">
+          <span class="nav-icon">
+            <svg class="hi-add" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 8v8M8 12h8"/>
+            </svg>
+          </span>
+          Add Employee
+        </a>
+      </div>
+
+      <div class="nav-right">
+        <div *ngIf="!auth.isAuthenticated()" class="nav-item">
+          <button class="nav-link btn-login" (click)="goToLogin()">
+            <span class="nav-icon">🔐</span> Login
+          </button>
+        </div>
+        <div *ngIf="auth.isAuthenticated()" class="user-menu">
+          <div class="user-dropdown-container">
+            <span class="user-display" (click)="toggleUserMenu()" [class.active]="isUserMenuOpen">
+              <span class="user-icon">
+                <svg class="hi-user" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </span>
+              <span class="username">{{auth.currentUser()}}</span>
+            </span>
+            <div class="user-dropdown-menu" *ngIf="isUserMenuOpen">
+              <button class="dropdown-item logout-item" (click)="logout()">
+                <span class="item-icon">🚪</span> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

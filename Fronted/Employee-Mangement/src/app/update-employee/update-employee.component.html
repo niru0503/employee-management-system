@@ -1,0 +1,105 @@
+<div class="update-card">
+    <h2>Update Employee</h2>
+    <p class="update-subtitle">Modify employee information</p>
+    <form #empForm="ngForm" (ngSubmit)="onSubmit(empForm)">
+            <div class="form-group">
+                <label>First Name *</label>
+                <input 
+                  required 
+                  minlength="2"
+                  type="text" 
+                  class="form-control" 
+                  id="firstName" 
+                  [(ngModel)]="employee.firstName" 
+                  name="firstName" 
+                  #firstName="ngModel"
+                  placeholder="Enter first name"
+                >
+                <div *ngIf="firstName.invalid && firstName.touched" class="text-danger">
+                  <span *ngIf="firstName.errors?.['required']">First name is required.</span>
+                  <span *ngIf="firstName.errors?.['minlength']">First name must be at least 2 characters.</span>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <label>Last Name *</label>
+                <input 
+                  required 
+                  minlength="2"
+                  type="text" 
+                  class="form-control" 
+                  id="lastName" 
+                  [(ngModel)]="employee.lastName" 
+                  name="lastName" 
+                  #lastName="ngModel"
+                  placeholder="Enter last name"
+                >
+                <div *ngIf="lastName.invalid && lastName.touched" class="text-danger">
+                  <span *ngIf="lastName.errors?.['required']">Last name is required.</span>
+                  <span *ngIf="lastName.errors?.['minlength']">Last name must be at least 2 characters.</span>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <label>Email *</label>
+                <input 
+                  required 
+                  type="email" 
+                  class="form-control" 
+                  id="emailId" 
+                  [(ngModel)]="employee.emailId" 
+                  (ngModelChange)="checkEmailExists($event)"
+                  name="emailId" 
+                  #emailId="ngModel"
+                  placeholder="Enter email address"
+                  [class.is-invalid]="emailExists"
+                >
+                <div *ngIf="emailId.invalid && emailId.touched" class="text-danger">
+                  <span *ngIf="emailId.errors?.['required']">Email is required.</span>
+                  <span *ngIf="emailId.errors?.['email']">Please enter a valid email address.</span>
+                </div>
+                <div *ngIf="emailExists" class="text-danger" style="margin-top: 5px;">
+                  <strong>⚠ This email address already exists. Please use a different email.</strong>
+                </div>
+                <div *ngIf="checkingEmail" class="text-info" style="margin-top: 5px;">
+                  Checking email availability...
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <label>Department *</label>
+                <select 
+                  required 
+                  class="form-control" 
+                  id="department" 
+                  [(ngModel)]="employee.department" 
+                  name="department" 
+                  #department="ngModel"
+                  [compareWith]="compareStrings"
+                >
+                  <option value="" disabled>Choose a department</option>
+                  <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+                </select>
+                <div *ngIf="department.invalid && department.touched" class="text-danger">
+                  Department is required.
+                </div>
+            </div>
+        
+            <div class="submit-row">
+              <button 
+                class="btn btn-primary" 
+                type="submit" 
+                [disabled]="!empForm.valid || emailExists"
+              >
+                Update Employee
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="goToEmployeeList()"
+              >
+                Cancel
+              </button>
+            </div>
+        </form>
+    </div>

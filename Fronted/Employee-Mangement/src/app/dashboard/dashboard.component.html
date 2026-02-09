@@ -1,0 +1,132 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>
+      <svg class="hi-dashboard" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:8px;">
+        <path d="M4 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5Z"/>
+        <path d="M14 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5Z"/>
+        <path d="M4 16a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3Z"/>
+        <path d="M14 13a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-6Z"/>
+      </svg>
+      Dashboard
+    </h1>
+    <p>Employee Management System Overview</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-message">
+    <span>⚠️ {{ error }}</span>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading && !error" class="dashboard-content">
+    <!-- Statistics Cards -->
+    <div class="stats-section">
+      <div class="stat-card total-employees">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <div class="stat-info">
+          <h3>Total Employees</h3>
+          <p class="stat-number">{{ totalEmployees }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card active-employees">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+        </div>
+        <div class="stat-info">
+          <h3>Active</h3>
+          <p class="stat-number">{{ totalEmployees }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card new-employees">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.09 3.26L16 6l-2.91 1.16L12 10l-1.09-2.84L8 6l2.91-.74L12 2z"></path></svg>
+        </div>
+        <div class="stat-info">
+          <h3>Recent Hires</h3>
+          <p class="stat-number">{{ recentEmployees.length }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card departments">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M8 7h8M8 11h8M8 15h8"></path></svg>
+        </div>
+        <div class="stat-info">
+          <h3>Departments</h3>
+          <p class="stat-number">{{ departmentStats.length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Department Statistics + Recent (two-column) -->
+    <div class="two-column">
+      <div class="departments-section">
+      <h2>Department Distribution</h2>
+      <div class="department-graph">
+        <svg viewBox="0 0 140 140" class="dept-pie" aria-label="Department distribution">
+          <g>
+            <ng-container *ngFor="let slice of pieSlices; let i = index">
+              <path [attr.d]="slice.path" [attr.fill]="slice.color"></path>
+            </ng-container>
+          </g>
+        </svg>
+        <div class="dept-legend">
+          <div *ngFor="let d of departmentStats; let i = index" class="legend-item">
+            <span class="legend-swatch" [style.backgroundColor]="getStatColor(i)"></span>
+            <span class="legend-label">{{ d.name }} — {{ d.percentage }}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="department-list">
+        <div *ngFor="let dept of departmentStats" class="department-item">
+          <div class="dept-header">
+            <div class="dept-left">
+              <span class="dept-name">{{ dept.name }}</span>
+            </div>
+            <div class="dept-right">
+              <span class="dept-count">{{ dept.count }} employees</span>
+              <span class="dept-percentage-label">{{ dept.percentage }}%</span>
+            </div>
+          </div>
+          <div class="dept-bar">
+            <div class="dept-progress" [style.width]="dept.percentage + '%'" [style.backgroundColor]="getStatColor(departmentStats.indexOf(dept))"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Recent Employees -->
+      <div class="recent-section">
+      <h2>Recent Employees</h2>
+      <div class="recent-employees-list">
+        <div *ngIf="recentEmployees.length === 0" class="no-data">
+          <p>No employees found</p>
+        </div>
+        <div *ngFor="let emp of recentEmployees" class="employee-card">
+          <div class="employee-header">
+            <div class="employee-left">
+              <span class="employee-avatar">{{ (emp.firstName?.charAt(0) || '') + (emp.lastName?.charAt(0) || '') }}</span>
+            </div>
+            <div class="employee-info">
+              <div class="employee-name">{{ emp.firstName }} {{ emp.lastName }}</div>
+              <div class="employee-email"><a [href]="'mailto:' + emp.emailId">{{ emp.emailId }}</a></div>
+              <div class="employee-meta">
+                <span class="detail-badge" *ngIf="emp.department">{{ emp.department }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

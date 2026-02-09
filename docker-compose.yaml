@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: employee_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: employee_db
+      MYSQL_USER: employee_user
+      MYSQL_PASSWORD: employee_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - employee_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Backend Service (Spring Boot)
+  backend:
+    build:
+      context: ./employee-backend
+      dockerfile: Dockerfile
+    container_name: employee_backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employee_db
+      SPRING_DATASOURCE_USERNAME: employee_user
+      SPRING_DATASOURCE_PASSWORD: employee_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: 'false'
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - employee_network
+    restart: unless-stopped
+
+  # Frontend Service (Angular)
+  frontend:
+    build:
+      context: ./Fronted/Employee-Mangement
+      dockerfile: Dockerfile
+    container_name: employee_frontend
+    environment:
+      API_URL: http://localhost:8080
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    networks:
+      - employee_network
+    restart: unless-stopped
+
+  # Optional: Adminer for MySQL Management UI
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+    networks:
+      - employee_network
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+
+volumes:
+  mysql_data:
+
+networks:
+  employee_network:
+    driver: bridge

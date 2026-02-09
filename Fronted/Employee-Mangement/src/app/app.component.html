@@ -1,0 +1,13 @@
+<app-navbar *ngIf="!isLoginPage()"></app-navbar>
+
+<main class="app-main" [ngClass]="{'app-main-login': isLoginPage()}">
+  <div class="container-fluid">
+    <router-outlet></router-outlet>
+  </div>
+</main>
+
+<footer class="footer" *ngIf="!isLoginPage()">
+  <div class="footer-content">
+    <p>Employee Management System © 2026 </p>
+  </div>
+</footer>

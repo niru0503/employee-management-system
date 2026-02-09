@@ -1,0 +1,40 @@
+<div class="container mt-4">
+<div class="details-card card-like">
+  <div class="details-header">
+    <h2>Employee Details</h2>
+    <div class="employee-id-badge">ID: #{{employee.id}}</div>
+  </div>
+  
+  <div class="details-grid">
+    <div class="detail-item">
+      <label>First Name</label>
+      <div class="detail-value">{{employee.firstName}}</div>
+    </div>
+    
+    <div class="detail-item">
+      <label>Last Name</label>
+      <div class="detail-value">{{employee.lastName}}</div>
+    </div>
+    
+    <div class="detail-item">
+      <label>Email Address</label>
+      <div class="detail-value">
+        <a href="mailto:{{employee.emailId}}">{{employee.emailId}}</a>
+      </div>
+    </div>
+    
+    <div class="detail-item">
+      <label>Department</label>
+      <div class="detail-value dept-badge">{{employee.department}}</div>
+    </div>
+  </div>
+  
+  <div class="details-actions">
+    <button (click)="updateEmployee(employee.id)" class="btn btn-warning">Edit</button>
+    <button (click)="deleteEmployee(employee.id)" class="btn btn-danger">Delete</button>
+    <button (click)="employeeList()" class="btn btn-secondary">Back to List</button>
+  </div>
+</div>
+</div>
+
+
