@@ -1,0 +1,14 @@
+.idea
+.git
+.gitignore
+node_modules
+Fronted
+*.log
+*.tmp
+
+.git
+.gitignore
+node_modules
+Fronted
+*.log
+*.tmp
